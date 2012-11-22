@@ -137,16 +137,16 @@ public class CilGenerator {
 	}
 	
 	public String printLoop(){
-		String beginLoop = UUID.randomUUID().toString();
-		String endLoop = UUID.randomUUID().toString();
+		String beginLoop = getLabel();
+		String endLoop = getLabel();
 		StringBuilder sb = new StringBuilder("ldc.i4 0");
 		sb.append(String.format("%sstloc printCount", newLine));
 		
 		//Check to see if there are any elements in the list
 		sb.append(String.format("%sldloc printList", newLine));
-		sb.append(String.format("%scallvirt instance void class [mscorlib]System.Collections.Generic.List`1<object>::Count()", newLine));
+		sb.append(String.format("%scall int32 [System.Core]System.Linq.Enumerable::Count<object>(class [mscorlib]System.Collections.Generic.IEnumerable`1<!!0>)", newLine));
 		sb.append(String.format("%sldc.i4.s 1", newLine));
-		sb.append(String.format("%sblt %s", newLine, endLoop));
+		sb.append(String.format("%sblt.s %s", newLine, endLoop));
 		//End the check of elements in the list
 		
 		//Start the loop
@@ -155,21 +155,25 @@ public class CilGenerator {
 		//Load an Item to be printed and print it
 		sb.append(String.format("%sldloc printList", newLine));
 		sb.append(String.format("%sldloc printCount", newLine));
-		sb.append(String.format("%scallvirt instance void class [mscorlib]System.Collections.Generic.List`1<object>::Item(!0)", newLine));
-		sb.append(String.format("%scall void [mscorlib]System.Console::Write(string)", newLine));
+		sb.append(String.format("%scallvirt instance !0 class [mscorlib]System.Collections.Generic.List`1<object>::get_Item(int32)", newLine));
+		sb.append(String.format("%scall void [mscorlib]System.Console::Write(object)", newLine));
 
 		
 		sb.append(String.format("%sldloc printCount", newLine));
 		sb.append(String.format("%sldloc printList", newLine));
-		sb.append(String.format("%scallvirt instance void class [mscorlib]System.Collections.Generic.List`1<object>::Count()", newLine));
+		sb.append(String.format("%scall int32 [System.Core]System.Linq.Enumerable::Count<object>(class [mscorlib]System.Collections.Generic.IEnumerable`1<!!0>)", newLine));
 		sb.append(String.format("%sldloc printCount", newLine));
 		sb.append(String.format("%sldc.i4.s 1", newLine));
 		sb.append(String.format("%sadd", newLine));
 		sb.append(String.format("%sstloc printCount", newLine));
-		sb.append(String.format("%sblt.s %s", newLine, beginLoop));
+		sb.append(String.format("%sbge.s %s", newLine, beginLoop));
 		
 		sb.append(String.format("%s%s:", newLine, endLoop));
 		return sb.toString();
+	}
+	
+	private String getLabel(){
+		return "l" + UUID.randomUUID().toString().replace("-", "").substring(0, 6);
 	}
 	
 }

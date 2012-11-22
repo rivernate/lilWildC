@@ -25,7 +25,7 @@ public class SimpleTest {
 				//"var1 = 42 / 5;" +
 				//"var1 = 42 - 1;" +
 				//"" +
-				"print \"New input for var1?\";" +
+				"print \"New input for var1?\", \"test\";" +
 				//"input var3;" +
 				//"print \"This is the answer \", 3+4, \"test\";" +
 				"return;\r\n" + 
