@@ -193,4 +193,24 @@ public class CilGenerator {
 		return sb.toString();
 	}
 	
+	public String loadVarArrayElem(String var, String loc){
+		StringBuilder sb = new StringBuilder(String.format("ldloc %s", var));
+		sb.append(String.format("%sldc.i4.s %s", newLine, loc));
+		sb.append(String.format("%sldelem.r4", newLine));
+		return sb.toString();
+	}
+	
+	public String setVar(String var){
+		return String.format("stloc %s", var);
+	}
+	
+	public String setVarArray(String var, String loc){
+		StringBuilder sb = new StringBuilder(String.format("ldloc %s", var));
+		sb.append(String.format("%sldc.i4.s %s", newLine, loc));
+		return sb.toString();
+	}
+	
+	public String storeVarArrayElem(String var){
+		return "stelem.r4";
+	}
 }

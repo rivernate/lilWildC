@@ -38,9 +38,14 @@ program
   ;
 
 statement
-  : ^('=' id=ID expr ) {cb.appendLine("stloc "+$id.text);}
+  : ^('=' set_var ) 
   | ^('print' {cb.appendLine(cg.clearPrintList());} out_item+) {cb.appendLine(cg.printLoop());}
   | ^('input' e=ID) {cb.appendLine(cg.input($e.text));}
+  ;
+  
+set_var
+  : id=ID expr {cb.appendLine(cg.setVar($id.text));}
+  | ^(ELEMENT id=ID l=A_NUMBER){cb.appendLine(cg.setVarArray($id.text, $l.text));} expr {cb.appendLine(cg.storeVarArrayElem($id.text));}
   ;
   
 out_item
@@ -55,6 +60,7 @@ expr
   | ^('*' op1=expr op2=expr) {cb.appendLine("mul");}
   | s=A_NUMBER {cb.appendLine("ldc.r4 " + $s.text);}
   | e=ID {cb.appendLine(cg.loadVar($e.text));}
+  | ^(ELEMENT id=ID l=A_NUMBER) {cb.appendLine(cg.loadVarArrayElem($id.text, $l.text));}
   ;
   
 localVars

@@ -19,14 +19,18 @@ public class SimpleTest {
 				"{\r\n" + 
 				"\r\n" + 
 				"number var3;\r\n" + 
-				//"number[10] var4;\r\n" +
-				"var3 = 42 * (3+(4*1));" +
-				"var3 = var3 + 5;" +
+				"number[10] var4;\r\n" +
+				"var4[1] = 3;" +
+				"var4[0] = var4[1] -1;" +
+				//"var4 = 3;" +
+				//"var3 = 42 * (3+(4*1));" +
+				//"var3 = var3 + 5;" +
 				//"var3 = 42 / 5;" +
 				//"var3 = 42 - 1;" +
 				//"" +
+				"print var4[0];" +
 				//"print 3+4;" +
-				"print var3;" +
+				//"print var3;" +
 				//"print \"New input for var1?\", var3;" +
 				//"input var3;" +
 				//"print \"This is the answer \", 3+4, \"test\";" +
