@@ -41,6 +41,18 @@ statement
   : ^('=' set_var ) 
   | ^('print' {cb.appendLine(cg.clearPrintList());} out_item+) {cb.appendLine(cg.printLoop());}
   | ^('input' e=ID) {cb.appendLine(cg.input($e.text));}
+  | ^('while' condition statement+ )
+  ;
+  
+condition
+  : ^('<' e1=expr e2=expr ) {cb.appendLine("clt");}
+  | ^('>' e1=expr e2=expr ) {cb.appendLine("cgt");}
+  | ^('>=' e1=expr e2=expr ) {cb.appendLine(cg.compareGreaterOrEquals());}
+  | ^('<=' e1=expr e2=expr ) {cb.appendLine(cg.compareLessOrEquals());}
+  | ^('==' e1=expr e2=expr ) {cb.appendLine("ceq");}
+  | ^('!=' e1=expr e2=expr ) {cb.appendLine(cg.compareNotEquals());}
+  | ^('&&' e1=expr e2=expr ) {cb.appendLine("and");}
+  | ^('||' e1=expr e2=expr ) {cb.appendLine("or");}
   ;
   
 set_var
@@ -54,10 +66,10 @@ out_item
   ;
   
 expr
-  : ^('+' op1=expr op2=expr) {cb.appendLine("add");}
-  | ^('-' op1=expr op2=expr) {cb.appendLine("sub");}
-  | ^('/' op1=expr op2=expr) {cb.appendLine("div");}
-  | ^('*' op1=expr op2=expr) {cb.appendLine("mul");}
+  : ^('+' expr expr) {cb.appendLine("add");}
+  | ^('-' expr expr) {cb.appendLine("sub");}
+  | ^('/' expr expr) {cb.appendLine("div");}
+  | ^('*' expr expr) {cb.appendLine("mul");}
   | s=A_NUMBER {cb.appendLine("ldc.r4 " + $s.text);}
   | e=ID {cb.appendLine(cg.loadVar($e.text));}
   | ^(ELEMENT id=ID l=A_NUMBER) {cb.appendLine(cg.loadVarArrayElem($id.text, $l.text));}

@@ -18,17 +18,23 @@ public class SimpleTest {
 				"procedure main\r\n" + 
 				"{\r\n" + 
 				"\r\n" + 
-				"number var3;\r\n" + 
-				"number[10] var4;\r\n" +
-				"var4[1] = 3;" +
-				"var4[0] = var4[1] -1;" +
+				"number var3;" + 
+				"number var4;" +
+				"var3 = 0;" +
+				"var4 = 5;" +
+				//"var4[1] = 3;" +
+				//"var4[0] = var4[1] -1;" +
+				"while( var3 < var4){" + 
+				"var3 = var3 + 1;" + 
+				"print \"var3 = \", var3;" + 
+				"}" +
 				//"var4 = 3;" +
 				//"var3 = 42 * (3+(4*1));" +
 				//"var3 = var3 + 5;" +
 				//"var3 = 42 / 5;" +
 				//"var3 = 42 - 1;" +
 				//"" +
-				"print var4[0];" +
+				//"print var4[0];" +
 				//"print 3+4;" +
 				//"print var3;" +
 				//"print \"New input for var1?\", var3;" +

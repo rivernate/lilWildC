@@ -213,4 +213,26 @@ public class CilGenerator {
 	public String storeVarArrayElem(String var){
 		return "stelem.r4";
 	}
+	
+	public String compareGreaterOrEquals(){
+		StringBuilder sb = new StringBuilder("clt_un");
+		sb.append(String.format("%sldc.i4.0", newLine));
+		sb.append(String.format("%sceq", newLine));
+		return sb.toString();
+	}
+	
+	public String compareLessOrEquals(){
+		StringBuilder sb = new StringBuilder("cgt_un");
+		sb.append(String.format("%sldc.i4.0", newLine));
+		sb.append(String.format("%sceq", newLine));
+		return sb.toString();
+	}
+	
+	public String compareNotEquals(){
+		StringBuilder sb = new StringBuilder("ceq");
+		sb.append(String.format("%sldc.i4.0", newLine));
+		sb.append(String.format("%sceq", newLine));
+		return sb.toString();
+	}
+	
 }
