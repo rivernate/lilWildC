@@ -12,7 +12,29 @@ import test.lilWildCParser.program_return;
 public class SimpleTest {
 	public static void main(String[] args) throws RecognitionException{
 		CharStream stream =	new ANTLRStringStream("" +
-				"number var1;\r\n" + 
+				"procedure main\r\n" + 
+				"{\r\n" + 
+				"\r\n" + 
+				"	number num2sqrt;\r\n" + 
+				"	number sqrt;\r\n" + 
+				"	number lastSqrt;\r\n" + 
+				"\r\n" + 
+				"	print \"Enter the number you want to generate the square root of: \";\r\n" + 
+				"	input num2sqrt;\r\n" + 
+				"\r\n" + 
+				"	sqrt = num2sqrt / 2.0;\r\n" + 
+				" 	lastSqrt = 0.0; \r\n" + 
+				" 	while ( sqrt != lastSqrt )  \r\n" + 
+				"	{ \r\n" + 
+				"		lastSqrt = sqrt;\r\n" + 
+				"		sqrt = ( sqrt + ( num2sqrt / sqrt )) / 2.0; \r\n" + 
+				" 	}\r\n" + 
+				"\r\n" + 
+				" 	print \"The square root of: \", num2sqrt, \" is \", sqrt, \"\\n\";\r\n" + 
+				"	return;\r\n" + 
+				"\r\n" + 
+				"}"
+				/*"number var1;\r\n" + 
 				"number[5] var2;\r\n" + 
 				"\r\n" + 
 				"procedure main\r\n" + 
@@ -26,7 +48,7 @@ public class SimpleTest {
 				//"var4[0] = var4[1] -1;" +
 				"while( var3 < var4){" + 
 				"var3 = var3 + 1;" + 
-				"print \"var3 = \", var3;" + 
+				"print \"var3 = \", var3, \" \";" + 
 				"}" +
 				//"var4 = 3;" +
 				//"var3 = 42 * (3+(4*1));" +
@@ -41,7 +63,8 @@ public class SimpleTest {
 				//"input var3;" +
 				//"print \"This is the answer \", 3+4, \"test\";" +
 				"return;\r\n" + 
-				"}");
+				"}"*/
+				);
 			lilWildCLexer lexer = new lilWildCLexer(stream);
 			TokenStream tokenStream = new CommonTokenStream(lexer);
 			lilWildCParser parser = new lilWildCParser(tokenStream);

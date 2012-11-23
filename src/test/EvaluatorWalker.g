@@ -41,7 +41,20 @@ statement
   : ^('=' set_var ) 
   | ^('print' {cb.appendLine(cg.clearPrintList());} out_item+) {cb.appendLine(cg.printLoop());}
   | ^('input' e=ID) {cb.appendLine(cg.input($e.text));}
-  | ^('while' condition statement+ )
+  | while_loop
+  ;
+  
+while_loop
+  @init{
+    String beginLabel = cg.getLabel();
+    String endLabel = cg.getLabel();
+  }
+  :^( 'while' 
+      {cb.appendLine(beginLabel + ':');}
+      condition 
+      {cb.appendLine("brfalse "+ endLabel);} 
+      statement+ 
+      {cb.appendLine(cg.whileEnd(beginLabel, endLabel));})
   ;
   
 condition

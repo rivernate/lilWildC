@@ -116,6 +116,7 @@ public class CilGenerator {
 	
 	public String input(String var){
 		StringBuilder sb = new StringBuilder("call string [mscorlib]System.Console::ReadLine()");
+		sb.append(String.format("%scall float32 [mscorlib]System.Single::Parse(string)", newLine));
 		sb.append(String.format("%sstloc %s", newLine, var));
 		return sb.toString();
 	}
@@ -178,18 +179,20 @@ public class CilGenerator {
 		sb.append(String.format("%sldc.i4.s 1", newLine));
 		sb.append(String.format("%sadd", newLine));
 		sb.append(String.format("%sstloc printCount", newLine));
-		sb.append(String.format("%sbge.s %s", newLine, beginLoop));
+		sb.append(String.format("%sldc.i4.s 1", newLine));
+		sb.append(String.format("%ssub", newLine));
+		sb.append(String.format("%sblt.s %s", newLine, beginLoop));
 		
 		sb.append(String.format("%s%s:", newLine, endLoop));
 		return sb.toString();
 	}
 	
-	private String getLabel(){
+	public String getLabel(){
 		return "l" + UUID.randomUUID().toString().replace("-", "").substring(0, 6);
 	}
 	
 	public String loadVar(String var){
-		StringBuilder sb = new StringBuilder(String.format("ldloca.s %s", var));
+		StringBuilder sb = new StringBuilder(String.format("ldloc %s", var));
 		return sb.toString();
 	}
 	
@@ -232,6 +235,12 @@ public class CilGenerator {
 		StringBuilder sb = new StringBuilder("ceq");
 		sb.append(String.format("%sldc.i4.0", newLine));
 		sb.append(String.format("%sceq", newLine));
+		return sb.toString();
+	}
+	
+	public String whileEnd(String beginLabel, String endLabel){
+		StringBuilder sb = new StringBuilder(String.format("br %s", beginLabel));
+		sb.append(String.format("%s%s:", newLine, endLabel));
 		return sb.toString();
 	}
 	
