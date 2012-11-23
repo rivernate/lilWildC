@@ -42,7 +42,13 @@ statement
   | ^('print' {cb.appendLine(cg.clearPrintList());} out_item+) {cb.appendLine(cg.printLoop());}
   | ^('input' e=ID) {cb.appendLine(cg.input($e.text));}
   | while_loop
+  | if_statement
+  | ^('else' if_statement statement)
   ;
+  
+if_statement
+  :  ^('if' condition statement+)
+  ;  
   
 while_loop
   @init{

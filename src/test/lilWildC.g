@@ -52,7 +52,7 @@ local_vars	:	var_def*
 
 statement	:	var_ref '='^ num_expr ';'!
 		|	'call'^ ID ';'!
-		|	'if'^ '('! condition ')'! '{'! statement+ '}'! ('else' '{'! statement+ '}'!)?
+		|	'if'^ '('! condition ')'! '{'! statement+ '}'! ('else'^ '{'! statement+ '}'!)?
 		|	'while'^ '('! condition ')'! '{'! statement+ '}'!
 		|	'input'^ var_ref ';'!
 		|	'print'^ output ';'!
