@@ -45,7 +45,7 @@ statement
   
 out_item
   : e=A_STRING {cb.appendLine(cg.addPrintString($e.text));}
-  | {cb.appendLine("ldloc printList");}expr {cb.appendLine(cg.addPrintExpr());}
+  | {cb.appendLine("ldloc printList");}expr {cb.appendLine(cg.addPrintExpr());}  
   ;
   
 expr
@@ -53,7 +53,8 @@ expr
   | ^('-' op1=expr op2=expr) {cb.appendLine("sub");}
   | ^('/' op1=expr op2=expr) {cb.appendLine("div");}
   | ^('*' op1=expr op2=expr) {cb.appendLine("mul");}
-  | s=A_NUMBER {cb.appendLine("ldc.i4.s " + $s.text);}
+  | s=A_NUMBER {cb.appendLine("ldc.r4 " + $s.text);}
+  | e=ID {cb.appendLine(cg.loadVar($e.text));}
   ;
   
 localVars

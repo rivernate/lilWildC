@@ -1,5 +1,9 @@
 package test.compiler.tools;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public class CilGenerator {
@@ -9,7 +13,9 @@ public class CilGenerator {
 	private StringBuilder cBuilder;
 	private StringBuilder lBuilder;
 	private StringBuilder laBuilder;
-	private boolean hasLocalVars; 
+	private boolean hasLocalVars;
+	private Set<String> globalVars;
+	private Map<String,Integer> globalVarArray;
 	
 
 	public CilGenerator() {
@@ -22,6 +28,8 @@ public class CilGenerator {
 		lBuilder = new StringBuilder(".locals init (");
 		laBuilder = new StringBuilder();
 		hasLocalVars = false;
+		globalVars = new HashSet<String>();
+		globalVarArray = new HashMap<String, Integer>();
 	}
 
 	public String getInitCode() {
@@ -38,15 +46,17 @@ public class CilGenerator {
 	}
 
 	public String genGlobalVar(String var) {
-		return String.format(".field public static int32 %s", var);
+		globalVars.add(var);
+		return String.format(".field public static float32 %s", var);
 	}
 
 	public String genGlobalVarArray(String var, String size) {
+		globalVarArray.put(var, Integer.parseInt(size));
 		cBuilder.append(String.format("%sldc.i4 %s", newLine, size));
-		cBuilder.append(String.format("%snewarr int32", newLine));
-		cBuilder.append(String.format("%sstsfld int32[] lilWildc::%s", newLine,
+		cBuilder.append(String.format("%snewarr float32", newLine));
+		cBuilder.append(String.format("%sstsfld float32[] lilWildc::%s", newLine,
 				var));
-		return String.format(".field public static int32[] %s", var);
+		return String.format(".field public static float32[] %s", var);
 	}
 
 	public String genProcedureStart(String name) {
@@ -67,26 +77,26 @@ public class CilGenerator {
 		if(!hasLocalVars){
 			lBuilder.append("class [mscorlib]System.Collections.Generic.List`1<object> printList,");
 			lBuilder.append("int32 printCount,");
-			lBuilder.append(String.format("int32 %s ", id));
+			lBuilder.append(String.format("float32 %s ", id));
 			hasLocalVars = true;
 		}
 		else{
-			lBuilder.append(String.format(", int32 %s ", id));
+			lBuilder.append(String.format(", float32 %s ", id));
 		}
 	}
 	
 	public void addLocalVarArray(String id, String size) {
 		if(!hasLocalVars){
 			lBuilder.append("class [mscorlib]System.Collections.Generic.List`1<object> list,");
-			lBuilder.append(String.format("int32[] %s ", id));
+			lBuilder.append(String.format("float32[] %s ", id));
 			hasLocalVars = true;
 			laBuilder.append(String.format("ldc.i4.s %d", size));
 		}
 		else{
-			lBuilder.append(String.format(", int32[] %s ", id));
+			lBuilder.append(String.format(", float32[] %s ", id));
 			laBuilder.append(String.format("%sldc.i4.s %s", newLine, size));
 		}
-		laBuilder.append(String.format("%snewarr [mscorlib]System.Int32", newLine));
+		laBuilder.append(String.format("%snewarr [mscorlib]System.Single", newLine));
 		laBuilder.append(String.format("%sstloc %s", newLine, id));
 	}
 	
@@ -124,9 +134,11 @@ public class CilGenerator {
 	}
 	
 	public String addPrintExpr(){
-		return "callvirt instance void class [mscorlib]System.Collections.Generic.List`1<object>::Add(!0)";
+		StringBuilder sb = new StringBuilder("box [mscorlib]System.Single");
+		sb.append(String.format("%scallvirt instance void class [mscorlib]System.Collections.Generic.List`1<object>::Add(!0)", newLine));
+		return sb.toString();
 	}
-	
+
 	public String whileLoop(String innerCode){
 		String startLoop = UUID.randomUUID().toString();
 		String endLoop = UUID.randomUUID().toString();
@@ -174,6 +186,11 @@ public class CilGenerator {
 	
 	private String getLabel(){
 		return "l" + UUID.randomUUID().toString().replace("-", "").substring(0, 6);
+	}
+	
+	public String loadVar(String var){
+		StringBuilder sb = new StringBuilder(String.format("ldloca.s %s", var));
+		return sb.toString();
 	}
 	
 }
