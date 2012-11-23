@@ -18,8 +18,8 @@ options {
 
 evaluator returns [String result]
   :{cb.append(cg.getInitCode());}
-  globalVars* {cb.appendLine(cg.genConstructor());} program
-  {cb.appendLine(cg.getEndCode());}
+  globalVars* {cb.appendLine(cg.genConstructor());} 
+  program {cb.appendLine(cg.getEndCode());}
   {result = cb.toString();}  
   ;
  
@@ -30,7 +30,11 @@ globalVars
   
  
 program
-  : ^('procedure' id=ID {cb.appendLine(cg.genProcedureStart($id.text));} localVars* {cb.appendLine(cg.getLocalVars());} statement* 'return') {cb.appendLine(cg.getEndCode());}
+  : ^('procedure' id=ID {cb.appendLine(cg.genProcedureStart($id.text));} 
+       localVars* {cb.appendLine(cg.getLocalVars());} 
+       statement* 
+       'return' {cb.appendLine("ret");}) 
+       {cb.appendLine(cg.getEndCode());}
   ;
 
 statement
