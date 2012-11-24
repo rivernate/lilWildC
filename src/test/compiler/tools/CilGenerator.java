@@ -118,7 +118,11 @@ public class CilGenerator {
 	public String input(String var){
 		StringBuilder sb = new StringBuilder("call string [mscorlib]System.Console::ReadLine()");
 		sb.append(String.format("%scall float32 [mscorlib]System.Single::Parse(string)", newLine));
-		sb.append(String.format("%sstloc %s", newLine, var));
+		if(globalVars.contains(var)){
+			sb.append(String.format("%sstsfld float32 lilWildc::%s", newLine, var));
+		}else{
+			sb.append(String.format("%sstloc %s", newLine, var));
+		}
 		return sb.toString();
 	}
 	
@@ -202,15 +206,15 @@ public class CilGenerator {
 		return sb.toString();
 	}
 	
-	public String loadVarArrayElem(String var, String loc){
+	public String loadVarArrayElem(String var){
 		StringBuilder sb;
 		if(globalVarArray.containsKey(var)){
 			sb = new StringBuilder(String.format("ldsfld float32[] lilWildc::%s", var));
 		}else{
 			sb = new StringBuilder(String.format("ldloc %s", var));
 		}
-		sb.append(String.format("%sldc.i4.s %s", newLine, loc));
-		sb.append(String.format("%sldelem.r4", newLine));
+		//sb.append(String.format("%sldc.i4.s %s", newLine, loc));
+		//sb.append(String.format("%sldelem.r4", newLine));
 		return sb.toString();
 	}
 	
@@ -222,14 +226,13 @@ public class CilGenerator {
 		}
 	}
 	
-	public String setVarArray(String var, String loc){
+	public String setVarArray(String var){
 		StringBuilder sb;
 		if(globalVarArray.containsKey(var)){
 			sb = new StringBuilder(String.format("ldsfld float32[] lilWildc::%s", var));
 		}else{
 			sb = new StringBuilder(String.format("ldloc %s", var));
 		}
-		sb.append(String.format("%sldc.i4.s %s", newLine, loc));
 		return sb.toString();
 	}
 	
@@ -238,14 +241,14 @@ public class CilGenerator {
 	}
 	
 	public String compareGreaterOrEquals(){
-		StringBuilder sb = new StringBuilder("clt_un");
+		StringBuilder sb = new StringBuilder("clt");
 		sb.append(String.format("%sldc.i4.0", newLine));
 		sb.append(String.format("%sceq", newLine));
 		return sb.toString();
 	}
 	
 	public String compareLessOrEquals(){
-		StringBuilder sb = new StringBuilder("cgt_un");
+		StringBuilder sb = new StringBuilder("cgt");
 		sb.append(String.format("%sldc.i4.0", newLine));
 		sb.append(String.format("%sceq", newLine));
 		return sb.toString();

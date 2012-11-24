@@ -19,7 +19,7 @@ options {
 evaluator returns [String result]
   :{cb.append(cg.getInitCode());}
   globalVars* {cb.appendLine(cg.genConstructor());} 
-  program* {cb.appendLine(cg.getEndCode());}
+  program+ {cb.appendLine(cg.getEndCode());}
   {result = cb.toString();}  
   ;
  
@@ -32,8 +32,8 @@ globalVars
 program
   : ^('procedure' id=ID {cb.appendLine(cg.genProcedureStart($id.text));} 
        localVars* {cb.appendLine(cg.getLocalVars());} 
-       statement* 
-       'return' {cb.appendLine("ret");}) 
+       statement+ 
+       ) 
        {cb.appendLine(cg.getEndCode());}
   ;
 
@@ -46,6 +46,7 @@ statement
   | {String endLabel = cg.getLabel();} if_statement[endLabel, endLabel]
     {cb.appendLine(endLabel + ":");}
   | if_else_statement
+  | 'return' {cb.appendLine("ret");}
   ;
   
 if_else_statement
@@ -84,19 +85,19 @@ while_loop
   ;
   
 condition
-  : ^('<' e1=expr e2=expr ) {cb.appendLine("clt");}
-  | ^('>' e1=expr e2=expr ) {cb.appendLine("cgt");}
-  | ^('>=' e1=expr e2=expr ) {cb.appendLine(cg.compareGreaterOrEquals());}
-  | ^('<=' e1=expr e2=expr ) {cb.appendLine(cg.compareLessOrEquals());}
-  | ^('==' e1=expr e2=expr ) {cb.appendLine("ceq");}
-  | ^('!=' e1=expr e2=expr ) {cb.appendLine(cg.compareNotEquals());}
-  | ^('&&' e1=expr e2=expr ) {cb.appendLine("and");}
-  | ^('||' e1=expr e2=expr ) {cb.appendLine("or");}
+  : ^('<' expr expr ) {cb.appendLine("clt");}
+  | ^('>' expr expr ) {cb.appendLine("cgt");}
+  | ^('>=' expr expr ) {cb.appendLine(cg.compareGreaterOrEquals());}
+  | ^('<=' expr expr ) {cb.appendLine(cg.compareLessOrEquals());}
+  | ^('==' expr expr ) {cb.appendLine("ceq");}
+  | ^('!=' expr expr ) {cb.appendLine(cg.compareNotEquals());}
+  | ^('&&' condition condition ) {cb.appendLine("and");}
+  | ^('||' condition condition ) {cb.appendLine("or");}
   ;
   
 set_var
   : id=ID expr {cb.appendLine(cg.setVar($id.text));}
-  | ^(ELEMENT id=ID l=A_NUMBER){cb.appendLine(cg.setVarArray($id.text, $l.text));} expr {cb.appendLine(cg.storeVarArrayElem($id.text));}
+  | ^(ELEMENT id=ID {cb.appendLine(cg.setVarArray($id.text));} expr) expr {cb.appendLine(cg.storeVarArrayElem($id.text));}
   ;
   
 out_item
@@ -109,9 +110,10 @@ expr
   | ^('-' expr expr) {cb.appendLine("sub");}
   | ^('/' expr expr) {cb.appendLine("div");}
   | ^('*' expr expr) {cb.appendLine("mul");}
+  | ^(NEG expr) {cb.appendLine("neg");}
   | s=A_NUMBER {cb.appendLine("ldc.r4 " + $s.text);}
   | e=ID {cb.appendLine(cg.loadVar($e.text));}
-  | ^(ELEMENT id=ID l=A_NUMBER) {cb.appendLine(cg.loadVarArrayElem($id.text, $l.text));}
+  | ^(ELEMENT id=ID {cb.appendLine(cg.loadVarArrayElem($id.text));} expr {cb.appendLine("ldelem.r4");}) 
   ;
   
 localVars

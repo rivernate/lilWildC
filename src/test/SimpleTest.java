@@ -12,22 +12,62 @@ import test.lilWildCParser.program_return;
 public class SimpleTest {
 	public static void main(String[] args) throws RecognitionException{
 		CharStream stream =	new ANTLRStringStream("" +
-				"number var1;\r\n" + 
-				"number[5] var2;\r\n" + 
-				"\r\n" + 
-				"procedure main\r\n" + 
-				"{\r\n" + 
-				"var1 = 3;" +
-				"var2[0] = 4;" +
-				"call second;" + 
-				"return;\r\n" + 
-				"}" +
-				"procedure second" +
-				"{" +
-				"print var1;" +
-				"print var2[0];" +
-				"return;" +
-				"}");
+				"number n;" + 
+				"number[1001] isPrime;" + 
+				"procedure main" + 
+				"{" + 
+				"	number i;" + 
+				"	print \"Enter the number to which you want to generate prime numbers (2<num<1000): \";" + 
+				"	input n;" + 
+				"	if ( n <= 1 || n > 1000 )" + 
+				"	{" + 
+				"		print \"\\nERROR: Number '\", n, \"' out of range!\\n\";" + 
+				"		return;" + 
+				"	}" + 
+				"	" + 
+				"	i = 2;" + 
+				"	while ( i <= n )" + 
+				"	{" + 
+				"		isPrime[i] = 1;" + 
+				"		i = i + 1;" + 
+				"	}" + 
+				"	call sieveOfErathosthenes;" + 
+				"	print \"\\nPrime numbers from 2 to \", n, \":\\n\";" + 
+				"	i = 2;" + 
+				"	while( i <= n )" + 
+				"	{" + 
+				"		if ( isPrime[i] == 1 )" + 
+				"		{" + 
+				"			print \"  \", i;" + 
+				"		}" + 
+				"		i = i + 1;" + 
+				"	}" + 
+				"	print \"\\n\";" + 
+				"	return;" + 
+				"	" + 
+				"}" + 
+				"procedure sieveOfErathosthenes" + 
+				"{" + 
+				"	number i;" + 
+				"	number j;" + 
+				"	i = 2;" + 
+				"	while ( i * i <= n )" + 
+				"	{" + 
+				"		if ( isPrime[i] == 1 )" + 
+				"		{" + 
+				"			j = i;" + 
+				"			while ( i * j <= n )" + 
+				"			{" + 
+				"				isPrime[i*j] = 0;" + 
+				"				j = j + 1;" + 
+				"			}" + 
+				"		}" + 
+				"		i = i + 1;" + 
+				"	}" + 
+				"	" + 
+				"	return;" + 
+				"}"+
+				"");
 			lilWildCLexer lexer = new lilWildCLexer(stream);
 			TokenStream tokenStream = new CommonTokenStream(lexer);
 			lilWildCParser parser = new lilWildCParser(tokenStream);

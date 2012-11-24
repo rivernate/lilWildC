@@ -11,6 +11,7 @@ options
 
 tokens {
   ELEMENT;
+  NEG;
 }
 
 @header
@@ -82,7 +83,8 @@ multExpr	:	negFactor
 			)*
 		;
 
-negFactor	:	'-'^? factor
+negFactor	:	'-' factor -> ^(NEG factor)
+    | factor
 		;
 
 factor		:	A_NUMBER
