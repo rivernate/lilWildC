@@ -19,7 +19,7 @@ options {
 evaluator returns [String result]
   :{cb.append(cg.getInitCode());}
   globalVars* {cb.appendLine(cg.genConstructor());} 
-  program {cb.appendLine(cg.getEndCode());}
+  program* {cb.appendLine(cg.getEndCode());}
   {result = cb.toString();}  
   ;
  
@@ -41,6 +41,7 @@ statement
   : ^('=' set_var ) 
   | ^('print' {cb.appendLine(cg.clearPrintList());} out_item+) {cb.appendLine(cg.printLoop());}
   | ^('input' e=ID) {cb.appendLine(cg.input($e.text));}
+  | ^('call' e=ID) {cb.appendLine(cg.callMethod($e.text));}
   | while_loop
   | {String endLabel = cg.getLabel();} if_statement[endLabel, endLabel]
     {cb.appendLine(endLabel + ":");}

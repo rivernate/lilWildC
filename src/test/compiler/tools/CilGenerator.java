@@ -75,8 +75,6 @@ public class CilGenerator {
 
 	public void addLocalVar(String id) {
 		if(!hasLocalVars){
-			lBuilder.append("class [mscorlib]System.Collections.Generic.List`1<object> printList,");
-			lBuilder.append("int32 printCount,");
 			lBuilder.append(String.format("float32 %s ", id));
 			hasLocalVars = true;
 		}
@@ -101,8 +99,11 @@ public class CilGenerator {
 	}
 	
 	public String getLocalVars(){
+		if(hasLocalVars) lBuilder.append(", ");
+		lBuilder.append("class [mscorlib]System.Collections.Generic.List`1<object> printList");
+		lBuilder.append(", int32 printCount");
 		lBuilder.append(')');
-		String output = hasLocalVars ? lBuilder.toString() : null;
+		String output = lBuilder.toString();
 		lBuilder = new StringBuilder(".locals init (");
 		hasLocalVars = false;
 		return output + getLocalArrayInit();
@@ -192,23 +193,42 @@ public class CilGenerator {
 	}
 	
 	public String loadVar(String var){
-		StringBuilder sb = new StringBuilder(String.format("ldloc %s", var));
+		StringBuilder sb = new StringBuilder();
+		if(globalVars.contains(var)){
+			sb.append(String.format("ldsfld float32 lilWildc::%s", var));
+		}else{
+			sb.append(String.format("ldloc %s", var));
+		}
 		return sb.toString();
 	}
 	
 	public String loadVarArrayElem(String var, String loc){
-		StringBuilder sb = new StringBuilder(String.format("ldloc %s", var));
+		StringBuilder sb;
+		if(globalVarArray.containsKey(var)){
+			sb = new StringBuilder(String.format("ldsfld float32[] lilWildc::%s", var));
+		}else{
+			sb = new StringBuilder(String.format("ldloc %s", var));
+		}
 		sb.append(String.format("%sldc.i4.s %s", newLine, loc));
 		sb.append(String.format("%sldelem.r4", newLine));
 		return sb.toString();
 	}
 	
 	public String setVar(String var){
-		return String.format("stloc %s", var);
+		if(globalVars.contains(var)){
+			return String.format("stsfld float32 lilWildc::%s", var);
+		}else{
+			return String.format("stloc %s", var);
+		}
 	}
 	
 	public String setVarArray(String var, String loc){
-		StringBuilder sb = new StringBuilder(String.format("ldloc %s", var));
+		StringBuilder sb;
+		if(globalVarArray.containsKey(var)){
+			sb = new StringBuilder(String.format("ldsfld float32[] lilWildc::%s", var));
+		}else{
+			sb = new StringBuilder(String.format("ldloc %s", var));
+		}
 		sb.append(String.format("%sldc.i4.s %s", newLine, loc));
 		return sb.toString();
 	}
@@ -251,6 +271,11 @@ public class CilGenerator {
 	
 	public String ifJumpToEnd(String endLabel){
 		StringBuilder sb = new StringBuilder(String.format("br %s", endLabel));
+		return sb.toString();
+	}
+	
+	public String callMethod(String method){
+		StringBuilder sb = new StringBuilder(String.format("call void lilWildc::%s()", method));
 		return sb.toString();
 	}
 	

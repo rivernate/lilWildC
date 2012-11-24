@@ -17,14 +17,16 @@ public class SimpleTest {
 				"\r\n" + 
 				"procedure main\r\n" + 
 				"{\r\n" + 
-				"\r\n" + 
-				"number var4;" +
-				"number var3;" +
-				"input var3;" +
-				"if (var3 < 5){" +
-				"print \"less than 5\";" +
-				"}" +
+				"var1 = 3;" +
+				"var2[0] = 4;" +
+				"call second;" + 
 				"return;\r\n" + 
+				"}" +
+				"procedure second" +
+				"{" +
+				"print var1;" +
+				"print var2[0];" +
+				"return;" +
 				"}");
 			lilWildCLexer lexer = new lilWildCLexer(stream);
 			TokenStream tokenStream = new CommonTokenStream(lexer);
