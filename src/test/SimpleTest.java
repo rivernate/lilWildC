@@ -19,12 +19,10 @@ public class SimpleTest {
 				"{\r\n" + 
 				"\r\n" + 
 				"number var4;" +
+				"number var3;" +
 				"input var3;" +
 				"if (var3 < 5){" +
 				"print \"less than 5\";" +
-				"}" +
-				"else {" +
-				"print \"greater than or equal to 5\";" +
 				"}" +
 				"return;\r\n" + 
 				"}");

@@ -42,12 +42,31 @@ statement
   | ^('print' {cb.appendLine(cg.clearPrintList());} out_item+) {cb.appendLine(cg.printLoop());}
   | ^('input' e=ID) {cb.appendLine(cg.input($e.text));}
   | while_loop
-  | if_statement
-  | ^('else' if_statement statement)
+  | {String endLabel = cg.getLabel();} if_statement[endLabel, endLabel]
+    {cb.appendLine(endLabel + ":");}
+  | if_else_statement
   ;
   
-if_statement
-  :  ^('if' condition statement+)
+if_else_statement
+  @init{
+    String elseLabel = cg.getLabel();
+    String endLabel = cg.getLabel();
+  }
+  : ^('else' 
+    if_statement[elseLabel, endLabel]
+    {cb.appendLine(elseLabel + ":");}
+    statement
+    {cb.appendLine(endLabel + ":");}
+    )
+  ;
+  
+if_statement[String elseLabel, String endLabel]
+  : ^('if' 
+    condition
+    {cb.appendLine(cg.ifJumpToElse(elseLabel));}
+    statement+
+    {cb.appendLine(cg.ifJumpToEnd(endLabel));}
+    )
   ;  
   
 while_loop

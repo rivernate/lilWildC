@@ -244,4 +244,14 @@ public class CilGenerator {
 		return sb.toString();
 	}
 	
+	public String ifJumpToElse(String elseLabel){
+		StringBuilder sb = new StringBuilder(String.format("%sbrfalse %s", newLine, elseLabel));
+		return sb.toString();
+	}
+	
+	public String ifJumpToEnd(String endLabel){
+		StringBuilder sb = new StringBuilder(String.format("br %s", endLabel));
+		return sb.toString();
+	}
+	
 }
